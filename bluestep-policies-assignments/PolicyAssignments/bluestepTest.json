@@ -1,0 +1,25 @@
+{
+    "PolicyAssignments": [
+        {
+            "Name": "BluestepTest",
+            "location": "westeurope",
+            "identity": "SystemAssigned",
+            "properties": {
+                "displayName": "Bluestep - Azure policy baseline initiative - Test",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/Bluestep/providers/Microsoft.Authorization/policySetDefinitions/Bluestep-BaselineTest",
+                "scope": "/providers/Microsoft.Management/managementGroups/BluestepTest",
+                "notScopes": [],
+                "nonComplianceMessages": [
+                    {
+                        "message": "Allowed Virtual Machine SKUs: Standard_B2ms, Standard_B4ms, Standard_B8ms, Standard_B12ms, Standard_B1s, Standard_B2s, Standard_D11_v2, Standard_D12_v2, Standard_D2s_v4, Standard_D4s_v4, Standard_D8s_v4, Standard_DS1_v2, Standard_DS2_v2, Standard_DS3_v2, Standard_DS4_v2, Standard_DS5_v2, Standard_DS11_v2, Standard_E2as_v4, Standard_E4as_v4, Standard_E8as_v4",
+                        "policyDefinitionReferenceId": "VMSizesAllowed"
+                    }
+                ],
+                "parameters": {},
+                "description": "Bluestep Azure policy baseline for the Test environment.",
+                "metadata": {},
+                "enforcementMode": "DoNotEnforce"
+            }
+        }
+    ]
+}

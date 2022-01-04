@@ -1,0 +1,30 @@
+{
+  "name": "bstp-cdpnet-az-devops-infra-peer-we",
+  "id": "/subscriptions/4cce1b5c-7a0c-455a-a9b9-7de30b3433a5/resourceGroups/bstp-cdnet-devops-we/providers/Microsoft.Network/virtualNetworks/bstp-cdpnet-vnet01-we/virtualNetworkPeerings/bstp-cdpnet-az-devops-infra-peer-we",
+  "etag": "W/\"07efb297-5179-4132-ad00-020d8cbb2af1\"",
+  "properties": {
+    "provisioningState": "Succeeded",
+    "resourceGuid": "b07d14cc-7f2e-04c9-34cb-46665dac8d72",
+    "peeringState": "Connected",
+    "remoteVirtualNetwork": {
+      "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we"
+    },
+    "allowVirtualNetworkAccess": true,
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "useRemoteGateways": true,
+    "doNotVerifyRemoteGateways": false,
+    "remoteGateways": [
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworkGateways/bstp-cdpnet-vnetgw01-ER-we"
+      }
+    ],
+    "remoteAddressSpace": {
+      "addressPrefixes": [
+        "10.126.196.0/23"
+      ]
+    },
+    "routeServiceVips": {}
+  },
+  "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+}

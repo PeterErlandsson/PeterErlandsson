@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "name": "[variables('policyAssignments')[copyIndex()].name]",
+            "location": "[variables('policyAssignments')[copyIndex()].location]",
+            "apiVersion": "2020-09-01",
+            "copy": {
+                "name": "PolicyAssignmentCopy",
+                "count": "[length(variables('policyAssignments'))]"
+            },
+            "properties": "[variables('policyAssignments')[copyIndex()].properties]",
+            "identity": {
+                "type": "[variables('policyAssignments')[copyIndex()].identity]"
+            }
+        }
+    ]
+}

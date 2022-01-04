@@ -1,0 +1,106 @@
+{
+    "Description": "Enables Endpoint Protection on Azure VMs.",
+    "DisplayName": "Bluestep - Enable Endpoint Protection on Azure VMs",
+    "Metadata": {
+        "version": "1.0.0",
+        "category": "Security"
+    },
+    "mode": "Indexed",
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "field": "Microsoft.Compute/imagePublisher",
+            "in": [
+              "MicrosoftWindowsServer",
+              "microsoftsqlserver",
+              "microsoftwindowsdesktop",
+              "MicrosoftVisualStudio"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "IaaSAntimalware",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                "equals": "Microsoft.Azure.Security"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                "equals": "IaaSAntimalware"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                "equals": "Succeeded"
+              }
+            ]
+          },
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "AzureVM": {
+                  "value": "[field('name')]"
+                },
+                "Location": {
+                  "value": "[field('location')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "AzureVM": {
+                    "type": "string"
+                  },
+                  "Location": {
+                    "type": "string"
+                  }
+                },
+                "variables": {},
+                "resources": [
+                  {
+                    "apiVersion": "2018-10-01",
+                    "name": "[concat(parameters('AzureVM'),'/IaaSAntimalware')]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "autoUpgradeMinorVersion": true,
+                      "provisioningState": "Succeeded",
+                      "publisher": "Microsoft.Azure.Security",
+                      "type": "IaaSAntimalware",
+                      "typeHandlerVersion": "1.1",
+                      "settings": {
+                        "AntimalwareEnabled": "true",
+                        "RealtimeProtectionEnabled": "true",
+                        "ScheduledScanSettings": {
+                          "isEnabled": "true",
+                          "scanType": "Quick",
+                          "day": "7",
+                          "time": "120"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+}

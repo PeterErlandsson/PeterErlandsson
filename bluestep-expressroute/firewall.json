@@ -1,0 +1,47 @@
+{
+  "name": "bstp-net-azfw-hub-we",
+  "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/azureFirewalls/bstp-net-azfw-hub-we",
+  "etag": "W/\"446d3219-5b17-445e-b91e-aeca41ef85b5\"",
+  "type": "Microsoft.Network/azureFirewalls",
+  "location": "westeurope",
+  "tags": {},
+  "zones": [
+    "1",
+    "2",
+    "3"
+  ],
+  "properties": {
+    "provisioningState": "Succeeded",
+    "sku": {
+      "name": "AZFW_VNet",
+      "tier": "Standard"
+    },
+    "threatIntelMode": "Deny",
+    "additionalProperties": {},
+    "ipConfigurations": [
+      {
+        "name": "bstp-net-azfw-pip-hub-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/azureFirewalls/bstp-net-azfw-hub-we/azureFirewallIpConfigurations/bstp-net-azfw-pip-hub-we",
+        "etag": "W/\"446d3219-5b17-445e-b91e-aeca41ef85b5\"",
+        "type": "Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "privateIPAddress": "10.126.196.196",
+          "privateIPAllocationMethod": "Dynamic",
+          "publicIPAddress": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/publicIPAddresses/bstp-net-azfw-pip-hub-we"
+          },
+          "subnet": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/AzureFirewallSubnet"
+          }
+        }
+      }
+    ],
+    "networkRuleCollections": [],
+    "applicationRuleCollections": [],
+    "natRuleCollections": [],
+    "firewallPolicy": {
+      "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/firewallPolicies/fwp_bstp-net-azfw-hub-we"
+    }
+  }
+}

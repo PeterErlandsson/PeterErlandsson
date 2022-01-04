@@ -1,0 +1,92 @@
+{
+    "PolicyAssignments": [
+        {
+            "Name": "Bluestep",
+            "location": "westeurope",
+            "identity": "SystemAssigned",
+            "properties": {
+                "displayName": "Bluestep - Azure policy baseline initiative",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/Bluestep/providers/Microsoft.Authorization/policySetDefinitions/Bluestep-Baseline",
+                "scope": "/providers/Microsoft.Management/managementGroups/Bluestep",
+                "notScopes": [],
+                "nonComplianceMessages": [
+                    {
+                        "message": "Resources are not compliant according to the Bluestep baseline initiative."
+                    },
+                    {
+                        "message": "Alllowed locations are: francecentral, francesouth, germanynorth, germanywestcentral, norwayeast, norwaywest, northeurope, westeurope, switzerlandnorth, switzerlandsouth, uksouth, ukwest",
+                        "policyDefinitionReferenceId": "RGLocationsAllowed"
+                    },
+                    {
+                        "message": "Alllowed locations are: francecentral, francesouth, germanynorth, germanywestcentral, norwayeast, norwaywest, northeurope, westeurope, switzerlandnorth, switzerlandsouth, uksouth, ukwest",
+                        "policyDefinitionReferenceId": "LocationsAllowed"
+                    },{
+                        "message": "We do not allow the creation of public IP addresses, Please contact the Infrastructure & IT Security team to create a public IP.",
+                        "policyDefinitionReferenceId": "PublicIP"
+                    },
+                    {
+                        "message": "Storage Accounts need to have Secure transfer enabled (https) - https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer",
+                        "policyDefinitionReferenceId": "SASecuretransferRequired"
+                    },
+                    {
+                        "message": "Storage Accounts need to prevent public read access to containers and blobs - https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-prevent",
+                        "policyDefinitionReferenceId": "StorageAccount-PublicAccess"
+                    }
+                ],
+                "parameters": {
+                    "listOfAllowedLocations": {
+                        "value": [
+                            "francecentral",
+                            "francesouth",
+                            "germanynorth",
+                            "germanywestcentral",
+                            "norwayeast",
+                            "norwaywest",
+                            "northeurope",
+                            "westeurope"
+                        ]
+                    },
+                    "SASecuretransferEffect": {
+                        "value": "Deny"
+                    },
+                    "virtualMachinesTier": {
+                        "value": "Standard"
+                    },
+                    "appServicesTier": {
+                        "value": "Free"
+                    },
+                    "sqlServersTier": {
+                        "value": "Free"
+                    },
+                    "sqlServerVirtualMachinesTier": {
+                        "value": "Free"
+                    },
+                    "storageAccountsTier": {
+                        "value": "Free"
+                    },
+                    "kubernetesServiceTier": {
+                        "value": "Free"
+                    },
+                    "containerRegistryTier": {
+                        "value": "Free"
+                    },
+                    "keyVaultsTier": {
+                        "value": "Free"
+                    },
+                    "dnsTier": {
+                        "value": "Free"
+                    },
+                    "armTier": {
+                        "value": "Free"
+                    },
+                    "openSourceRelationalDatabaseTier": {
+                        "value": "Free"
+                    }
+                },
+                "description": "Bluestep Azure policy baseline",
+                "metadata": {},
+                "enforcementMode": "Default"
+            }
+        }
+    ]
+}

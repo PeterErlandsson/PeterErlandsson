@@ -1,0 +1,255 @@
+{
+    "Description": "This baseline makes sure that we require the following settings:\nEnforce/audit tags:\n1) environment\n2) owner\n\nThe following european locations are allowed to deploy to:\nEurope\nREGION\tLOCATION\nNorth Europe\nWest Europe\nFrance Central\nFrance South\nUK West\nUK South\nGermany West Central (Public)\nGermany North (Public)\nSwitzerland West\nSwitzerland North\nNorway East\nNorway West",
+    "DisplayName": "Bluestep - Azure policy baseline initiative",
+    "Parameters": {
+        "listOfAllowedLocations": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Allowed locations",
+                "strongType": "location"
+            },
+            "allowedValues": [
+                "francecentral",
+                "francesouth",
+                "germanynorth",
+                "germanywestcentral",
+                "norwayeast",
+                "norwaywest",
+                "northeurope",
+                "westeurope",
+                "switzerlandnorth",
+                "switzerlandsouth",
+                "swedennorth",
+                "swedensouth",
+                "swedencentral",
+                "uksouth",
+                "ukwest"
+            ]
+        },
+        "SASecuretransferEffect": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Storage Account - Secure Transfer - Effect",
+                "description": "The effect determines what happens when the policy rule is evaluated to match"
+            },
+            "defaultValue": "Audit"
+        },
+        "virtualMachinesTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "virtualMachinesTier",
+                "description": "Specifiy whether you want to enable Standard tier for Virtual Machine resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "appServicesTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "appServicesTier",
+                "description": "Specify whether you want to enable Standard tier for Azure App Service resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "sqlServersTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "sqlServersTier",
+                "description": "Specify whether you want to enable Standard tier for PaaS SQL Service resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "sqlServerVirtualMachinesTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "sqlServerVirtualMachinesTier",
+                "description": "Specify whether you want to enable Standard tier for SQL Server on VM resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "storageAccountsTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "storageAccountsTier",
+                "description": "Specify whether you want to enable Standard tier for Storage Account resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "kubernetesServiceTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "kubernetesServiceTier",
+                "description": "Specify whether you want to enable Standard tier for Kubernetes service resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "containerRegistryTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "containerRegistryTier",
+                "description": "Specify whether you want to enable Standard tier for Container Registry resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "keyVaultsTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "keyVaultsTier",
+                "description": "Specify whether you want to enable Standard tier for Key Vault resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "dnsTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "dnsTier",
+                "description": "Specify whether you want to enable Standard tier for DNS resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        },
+        "armTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "armTier",
+                "description": "Specify whether you want to enable Standard tier for ARM resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        }
+        ,
+        "openSourceRelationalDatabaseTier": {
+            "type": "String",
+            "metadata": {
+                "displayName": "openSourceRelationalDatabaseTier",
+                "description": "Specify whether you want to enable Standard tier for openSourceRelationalDatabase resource type"
+            },
+            "allowedValues": [
+                "Standard",
+                "Free"
+            ],
+            "defaultValue": "Free"
+        }
+    },
+    "PolicyDefinitions": [
+        {
+            "policyDefinitionReferenceId": "RGLocationsAllowed",
+            "policyDefinitionId": "Bluestep-RGLocationsAllowed",
+            "parameters": {
+                "listOfAllowedLocations": {
+                    "value": "[parameters('LISTOFALLOWEDLOCATIONS')]"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "LocationsAllowed",
+            "policyDefinitionId": "Bluestep-LocationsAllowed",
+            "parameters": {
+                "listOfAllowedLocations": {
+                    "value": "[parameters('LISTOFALLOWEDLOCATIONS')]"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "PublicIP",
+            "policyDefinitionId": "Bluestep-PublicIP"
+        },
+        {
+            "policyDefinitionReferenceId": "BluestepASC",
+            "policyDefinitionId": "Bluestep-ASC",
+            "parameters": {
+                "virtualMachinesTier": {
+                    "value": "[parameters('virtualMachinesTier')]"
+                },
+                "appServicesTier": {
+                    "value": "[parameters('appServicesTier')]"
+                },
+                "sqlServersTier": {
+                    "value": "[parameters('sqlServersTier')]"
+                },
+                "sqlServerVirtualMachinesTier": {
+                    "value": "[parameters('sqlServerVirtualMachinesTier')]"
+                },
+                "storageAccountsTier": {
+                    "value": "[parameters('storageAccountsTier')]"
+                },
+                "kubernetesServiceTier": {
+                    "value": "[parameters('kubernetesServiceTier')]"
+                },
+                "containerRegistryTier": {
+                    "value": "[parameters('containerRegistryTier')]"
+                },
+                "keyVaultsTier": {
+                    "value": "[parameters('keyVaultsTier')]"
+                },
+                "dnsTier": {
+                    "value": "[parameters('dnsTier')]"
+                },
+                "armTier": {
+                    "value": "[parameters('armTier')]"
+                },
+                "openSourceRelationalDatabaseTier": {
+                    "value": "[parameters('openSourceRelationalDatabaseTier')]"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "ASC-VMScanner",
+            "policyDefinitionId": "Bluestep-ASC-VMScanner"
+        },
+        {
+            "policyDefinitionReferenceId": "VMEndpointProtection",
+            "policyDefinitionId": "Bluestep-VMEndpointProtection"
+        },
+        {
+            "policyDefinitionReferenceId": "SASecuretransferRequired",
+            "policyDefinitionId": "Bluestep-SASecuretransferRequired",
+            "parameters": {
+                "SASecuretransferEffect": {
+                    "value": "[parameters('SASecuretransferEffect')]"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "StorageAccount-PublicAccess",
+            "policyDefinitionId": "Bluestep-StorageAccount-PublicAccess"
+        }
+    ]
+}

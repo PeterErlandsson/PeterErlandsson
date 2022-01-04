@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+          "topLevelManagementGroupPrefix": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]",
+        "policies": {
+            "policyDefinitions": {}
+        },
+        "initiatives": {
+            "policySetDefinitions": {}
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/policyDefinitions",
+            "name": "[variables('policies').policyDefinitions[copyIndex()].name]",
+            "apiVersion": "2019-09-01",
+            "copy": {
+                "name": "policyDefinitionCopy",
+                "count": "[length(variables('policies').policyDefinitions)]"
+            },
+            "properties": {
+                "displayName": "[variables('policies').policyDefinitions[copyIndex()].properties.displayName]",
+                "description": "[variables('policies').policyDefinitions[copyIndex()].properties.description]",
+                "mode": "[if(contains(variables('policies').policyDefinitions[copyIndex()].properties,'mode'),variables('policies').policyDefinitions[copyIndex()].properties.mode,'All')]",
+                "policyType": "Custom",
+                "parameters": "[variables('policies').policyDefinitions[copyIndex()].properties.parameters]",
+                "policyRule": "[variables('policies').policyDefinitions[copyIndex()].properties.policyRule]"
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/policySetDefinitions",
+            "name": "[variables('initiatives').policySetDefinitions[copyIndex()].name]",
+            "apiVersion": "2019-09-01",
+            "dependsOn": [
+                "policyDefinitionCopy"
+            ],
+            "copy": {
+                "name": "policySetDefinitionCopy",
+                "count": "[length(variables('initiatives').policySetDefinitions)]"
+            },
+            "properties": {
+                "policyType": "Custom",
+                "displayName": "[variables('initiatives').policySetDefinitions[copyIndex()].properties.displayName]",
+                "description": "[variables('initiatives').policySetDefinitions[copyIndex()].properties.description]",
+                "parameters": "[variables('initiatives').policySetDefinitions[copyIndex()].properties.parameters]",
+                "policyDefinitions": "[variables('initiatives').policySetDefinitions[copyIndex()].properties.policyDefinitions]"
+            }
+        }
+    ]
+}

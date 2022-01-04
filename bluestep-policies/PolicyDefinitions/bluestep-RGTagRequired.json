@@ -1,0 +1,36 @@
+{
+  "Description": "Enforces existence of a tag on resource groups.",
+  "DisplayName": "Bluestep - Require a tag on resource groups",
+  "Metadata": {
+    "version": "1.0.0",
+    "category": "Tags"
+  },
+  "Mode": "All",
+  "Parameters": {
+    "tagName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Tag Name",
+        "description": "Name of the tag, such as 'environment'"
+      }
+    }
+  },
+  "PolicyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+        },
+        {
+          "field": "[concat('tags[', parameters('tagName'), ']')]",
+          "exists": "false"
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "PolicyType": 2
+}

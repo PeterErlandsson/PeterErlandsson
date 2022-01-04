@@ -1,0 +1,102 @@
+{
+  "name": "bstp-cdpnet-er01-we",
+  "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/expressRouteCircuits/bstp-cdpnet-er01-we",
+  "etag": "W/\"25aa07a0-fbe3-4858-b9ad-cba29da18fa6\"",
+  "type": "Microsoft.Network/expressRouteCircuits",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded",
+    "resourceGuid": "8ff72272-1d24-426f-ae4b-80de001c3b40",
+    "peerings": [
+      {
+        "name": "AzurePrivatePeering",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/expressRouteCircuits/bstp-cdpnet-er01-we/peerings/AzurePrivatePeering",
+        "etag": "W/\"25aa07a0-fbe3-4858-b9ad-cba29da18fa6\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "peeringType": "AzurePrivatePeering",
+          "azureASN": 12076,
+          "peerASN": 2119,
+          "primaryPeerAddressPrefix": "172.17.80.224/30",
+          "secondaryPeerAddressPrefix": "172.17.80.228/30",
+          "primaryAzurePort": "",
+          "secondaryAzurePort": "",
+          "state": "Enabled",
+          "vlanId": 100,
+          "gatewayManagerEtag": "",
+          "lastModifiedBy": "Customer",
+          "microsoftPeeringConfig": {
+            "advertisedPublicPrefixes": [],
+            "advertisedCommunities": [],
+            "advertisedPublicPrefixesState": "NotConfigured",
+            "customerASN": 0,
+            "legacyMode": 0,
+            "routingRegistryName": "NONE"
+          },
+          "connections": [],
+          "peeredConnections": []
+        },
+        "type": "Microsoft.Network/expressRouteCircuits/peerings"
+      },
+      {
+        "name": "MicrosoftPeering",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/expressRouteCircuits/bstp-cdpnet-er01-we/peerings/MicrosoftPeering",
+        "etag": "W/\"25aa07a0-fbe3-4858-b9ad-cba29da18fa6\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "peeringType": "MicrosoftPeering",
+          "azureASN": 12076,
+          "peerASN": 2119,
+          "primaryPeerAddressPrefix": "193.214.128.224/30",
+          "secondaryPeerAddressPrefix": "193.214.128.228/30",
+          "primaryAzurePort": "",
+          "secondaryAzurePort": "",
+          "state": "Enabled",
+          "vlanId": 101,
+          "gatewayManagerEtag": "",
+          "lastModifiedBy": "Customer",
+          "microsoftPeeringConfig": {
+            "advertisedPublicPrefixes": [
+              "193.214.128.220/30"
+            ],
+            "advertisedCommunities": [
+              "12076:54002",
+              "12076:51002",
+              "12076:52002",
+              "12076:53002"
+            ],
+            "advertisedPublicPrefixesState": "Configured",
+            "customerASN": 0,
+            "legacyMode": 0,
+            "routingRegistryName": "NONE"
+          },
+          "routeFilter": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/routeFilters/bstp-ER-RouteFilter01-we"
+          },
+          "connections": [],
+          "peeredConnections": []
+        },
+        "type": "Microsoft.Network/expressRouteCircuits/peerings"
+      }
+    ],
+    "authorizations": [],
+    "serviceProviderProperties": {
+      "serviceProviderName": "Telenor",
+      "peeringLocation": "Amsterdam",
+      "bandwidthInMbps": 500
+    },
+    "circuitProvisioningState": "Enabled",
+    "allowClassicOperations": false,
+    "gatewayManagerEtag": "",
+    "serviceKey": "73ec56af-dfcb-42c4-aa97-54ba724dd5e1",
+    "serviceProviderProvisioningState": "Provisioned",
+    "allowGlobalReach": false,
+    "globalReachEnabled": false,
+    "stag": 57
+  },
+  "sku": {
+    "name": "Premium_UnlimitedData",
+    "tier": "Premium",
+    "family": "UnlimitedData"
+  }
+}

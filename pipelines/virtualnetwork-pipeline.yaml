@@ -1,0 +1,483 @@
+name: 'Bluestep Azure virtualnetwork'
+trigger: none
+
+variables:
+  solution: 'bluestep-virtualnetwork'
+  artifactName: 'azure-virtualnetwork-artifact'
+  Sandbox : 'Bluestep Sandbox Management Group'
+  Test : 'Bluestep Root Management Group'
+  Production: 'Bluestep Root Management Group'
+  environmentProd: 'Bluestep-Production'
+  environmentTest: 'Bluestep-Test'
+  environmentSandbox: 'Bluestep-Sandbox'
+  Subscriptionid: '2887160a-ea77-4845-aba8-644475701efa'
+  resourceGroupName: 'rg-hub-prod-we'
+  FirewallNetworkName: 'vnet-connectivity-production'
+
+pool:
+  vmImage: 'windows-2022'
+
+stages:
+- stage: Build
+  jobs:
+  - job: UploadArtifact
+    steps: 
+    - checkout: self
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)\$(solution)'
+        Contents: '**'
+        TargetFolder: '$(Pipeline.Workspace)\$(solution)'
+    - task: AzurePowerShell@5
+      displayName: 'Build the artifact using PowerShell'
+      inputs:
+        azureSubscription: '$(Sandbox)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(solution)\scripts\Build.ps1'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(solution)'
+        pwsh: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)\$(solution)'
+        flattenFolders: false
+        Contents: |
+          *.bicep
+          *.json
+          modules\*.*
+          deploy.ps1
+          scripts\Postdeploy.ps1
+          scripts\Predeploy.ps1
+          scripts\UnlockRG.ps1
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
+- stage: Validate
+  dependsOn: Build
+  jobs:
+  - job: ValidateARMTTK
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Sandbox - ARM-TTK validation'
+      inputs:
+        azureSubscription: '$(Sandbox)'
+        ScriptType: 'inlineScript'
+        Inline: |
+          Write-Verbose "Downloading the latest version of ARM-TTK from github, please wait.." -Verbose
+          Git clone https://github.com/Azure/arm-ttk.git "$env:TMP\git"
+          Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+          Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\sandbox.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Location-Should-Not-Be-Hardcoded','apiVersions-Should-Be-Recent-In-Reference-Functions','Template-Should-Not-Contain-Blanks')
+        azurePowerShellVersion: 'LatestVersion'
+        scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzurePowerShell@5
+      displayName: 'Test - ARM-TTK validation'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'inlineScript'
+        Inline: |
+          Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+          Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\test.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Location-Should-Not-Be-Hardcoded','apiVersions-Should-Be-Recent-In-Reference-Functions','Template-Should-Not-Contain-Blanks')
+        azurePowerShellVersion: 'LatestVersion'
+        scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzurePowerShell@5
+      displayName: 'Production - ARM-TTK validation'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'inlineScript'
+        Inline: |
+          Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+          Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\production.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Location-Should-Not-Be-Hardcoded','apiVersions-Should-Be-Recent-In-Reference-Functions','Template-Should-Not-Contain-Blanks')
+        azurePowerShellVersion: 'LatestVersion'
+        scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+  - job: ValidateARMandUnlockRG
+    dependsOn: ValidateARMTTK
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Unlock resource groups in each Sandbox subscription'
+      inputs:
+        azureSubscription: '$(Sandbox)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+        ScriptArguments: -Environment 'Sandbox'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Sandbox - Validation'
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Sandbox)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\sandbox.json'
+        deploymentMode: 'Validation'
+    - task: AzurePowerShell@5
+      displayName: 'Unlock resource groups in each Test subscription'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+        ScriptArguments: -Environment 'Test'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Test - Validation'
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Test)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\test.json'
+        deploymentMode: 'Validation'
+    - task: AzurePowerShell@5
+      displayName: 'Unlock resource groups in each Production subscription'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+        ScriptArguments: -Environment 'Production'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Production - Validation'
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Production)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\production.json'
+        deploymentMode: 'Validation'
+- stage: Sandbox_WhatIf
+  dependsOn: Validate
+  variables:
+  - name: environment
+    value: sandbox
+  jobs:
+  - job: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Predeploy - Create Resource groups in each $(environment) subscription.'
+      inputs:
+        azureSubscription: '$(Sandbox)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\Predeploy.ps1'
+        ScriptArguments: -Environment $(environment) -Location 'West Europe' -Owner 'Infrastructure'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentName: 'Azure-Spoke-Lock-deployment'
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Sandbox)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\sandboxLock.json'
+        deploymentMode: 'Incremental'
+  - job: WhatIfDeployment
+    dependsOn: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: '$(environment) - Bluestep Azure VirtualNetwork Whatif'
+      inputs:
+        azureSubscription: '$(Sandbox)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+        ScriptArguments: -Whatif -Environment '$(environment)'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: Sandbox_Deploy
+  variables:
+  - name: environment
+    value: sandbox
+  jobs:
+  - deployment: DeployVirtualNetwork
+    displayName: Deploy Azure VirtualNetwork for Sandbox
+    environment: '$(environmentSandbox)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: 'Unlock resource groups in each $(environment) subscription'
+          inputs:
+            azureSubscription: '$(Sandbox)'
+            ScriptType: 'FilePath'
+            ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+            ScriptArguments: -Environment $(environment)
+            azurePowerShellVersion: 'LatestVersion'
+            workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+            pwsh: true
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentName: 'Azure-Spoke-Network-deployment'
+            deploymentScope: 'Management Group'
+            azureResourceManagerConnection: '$(Sandbox)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\$(artifactName)\sandbox.json'
+            deploymentMode: 'Incremental'
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentName: 'Azure-Spoke-Lock-deployment'
+            deploymentScope: 'Management Group'
+            azureResourceManagerConnection: '$(Sandbox)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\$(artifactName)\sandboxLock.json'
+            deploymentMode: 'Incremental'
+- stage: Test_WhatIf
+  dependsOn: Validate
+  variables:
+    - name: environment
+      value: test
+  jobs:
+  - job: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Predeploy - Create Resource groups in each $(environment) subscription.'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\Predeploy.ps1'
+        ScriptArguments: -Environment $(environment) -Location 'West Europe' -Owner 'Infrastructure'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentName: 'Azure-Spoke-Lock-deployment'
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Test)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\testLock.json'
+        deploymentMode: 'Incremental'
+  - job: WhatIfDeployment
+    dependsOn: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: '$(environment) - Bluestep Azure VirtualNetwork Whatif'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+        ScriptArguments: -Whatif -Environment '$(environment)'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: Test_Deploy
+  variables:
+    - name: environment
+      value: test
+  jobs:
+  - deployment: DeployVirtualNetwork
+    displayName: Deploy Azure VirtualNetwork for Test
+    environment: '$(environmentTest)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: 'Unlock resource groups in each $(environment) subscription'
+          inputs:
+            azureSubscription: '$(Test)'
+            ScriptType: 'FilePath'
+            ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+            ScriptArguments: -Environment $(environment)
+            azurePowerShellVersion: 'LatestVersion'
+            workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+            pwsh: true
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentName: 'Azure-Spoke-Network-deployment'
+            deploymentScope: 'Management Group'
+            azureResourceManagerConnection: '$(Test)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\$(artifactName)\test.json'
+            deploymentMode: 'Incremental'
+  - job: Postdeploy
+    dependsOn: DeployVirtualNetwork
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Postdeploy - Complete all the Azure Vnet peerings for Test.'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\Postdeploy.ps1'
+        ScriptArguments: -FirewallResourceGroupName '$(resourceGroupName)' -FirewallNetworkName '$(FirewallNetworkName)' -FirewallSub '$(Subscriptionid)' -Environment $(environment)
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentName: 'Azure-Spoke-Lock-deployment'
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Test)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\testLock.json'
+        deploymentMode: 'Incremental'
+- stage: Production_WhatIf
+  dependsOn: Validate
+  variables:
+    - name: environment
+      value: production
+  jobs:
+  - job: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Predeploy - Create Resource groups in each $(environment) subscription.'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\Predeploy.ps1'
+        ScriptArguments: -Environment $(environment) -Location 'West Europe' -Owner 'Infrastructure'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentName: 'Azure-Spoke-Lock-deployment'
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Production)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\productionLock.json'
+        deploymentMode: 'Incremental'
+  - job: WhatIfDeployment
+    dependsOn: Predeploy
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: '$(environment) - Bluestep Azure VirtualNetwork Whatif'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+        ScriptArguments: -Whatif -Environment '$(environment)'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: Production_Deploy
+  variables:
+    - name: environment
+      value: production
+  jobs:
+  - deployment: DeployVirtualNetwork
+    displayName: Deploy Azure VirtualNetwork for Production
+    environment: '$(environmentProd)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: 'Unlock resource groups in each $(environment) subscription'
+          inputs:
+            azureSubscription: '$(Production)'
+            ScriptType: 'FilePath'
+            ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\UnlockRG.ps1'
+            ScriptArguments: -Environment $(environment)
+            azurePowerShellVersion: 'LatestVersion'
+            workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+            pwsh: true
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentName: 'Azure-Spoke-Network-deployment'
+            deploymentScope: 'Management Group'
+            azureResourceManagerConnection: '$(Production)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\$(artifactName)\Production.json'
+            deploymentMode: 'Incremental'
+  - job: Postdeploy
+    dependsOn: DeployVirtualNetwork
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Postdeploy - Complete all the Azure Vnet peerings for Production.'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\scripts\Postdeploy.ps1'
+        ScriptArguments: -FirewallResourceGroupName '$(resourceGroupName)' -FirewallNetworkName '$(FirewallNetworkName)' -FirewallSub '$(Subscriptionid)' -Environment $(environment)
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentName: 'Azure-Spoke-Lock-deployment'
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Production)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\ProductionLock.json'
+        deploymentMode: 'Incremental'

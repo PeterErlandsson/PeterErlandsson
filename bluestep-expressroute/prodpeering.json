@@ -1,0 +1,30 @@
+{
+  "name": "bstp-net-az-hub-prod-peer-we",
+  "id": "/subscriptions/9d957d40-b4aa-47b6-83ec-2f5bc899a938/resourceGroups/bstp-cdpnet-prod-vnet01-we/providers/Microsoft.Network/virtualNetworks/bstp-cdpnet-prod-vnet01-we/virtualNetworkPeerings/bstp-net-az-hub-prod-peer-we",
+  "etag": "W/\"f495ed09-baf3-43c1-95a6-3f8e1376ef46\"",
+  "properties": {
+    "provisioningState": "Succeeded",
+    "resourceGuid": "19b43742-4de8-0f4a-0591-2634d6a2166c",
+    "peeringState": "Connected",
+    "remoteVirtualNetwork": {
+      "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we"
+    },
+    "allowVirtualNetworkAccess": true,
+    "allowForwardedTraffic": true,
+    "allowGatewayTransit": false,
+    "useRemoteGateways": true,
+    "doNotVerifyRemoteGateways": false,
+    "remoteGateways": [
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworkGateways/bstp-cdpnet-vnetgw01-ER-we"
+      }
+    ],
+    "remoteAddressSpace": {
+      "addressPrefixes": [
+        "10.126.196.0/23"
+      ]
+    },
+    "routeServiceVips": {}
+  },
+  "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+}

@@ -1,0 +1,79 @@
+{
+    "Description": "Enables Backup for Azure VMs",
+    "DisplayName": "Bluestep - Backup for Azure VMs",
+    "Metadata": {
+        "version": "1.0.0",
+        "category": "Backup"
+    },
+    "mode": "Indexed",
+    "parameters": {},
+    "policyRule": {
+        "if": {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+        },
+        "then": {
+            "effect": "deployIfNotExists",
+            "details": {
+                "roleDefinitionIds": [
+                    "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                ],
+                "type": "Microsoft.RecoveryServices/backupProtectedItems",
+                "deployment": {
+                    "properties": {
+                        "mode": "incremental",
+                        "parameters": {
+                            "VMName": {
+                                "value": "[field('name')]"
+                            },
+                            "VMRG": {
+                                "value": "[resourcegroup().name]"
+                            }
+                        },
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {
+                                "VMRG": {
+                                    "type": "string"
+                                },
+                                "VMName": {
+                                    "type": "string"
+                                }
+                            },
+                            "variables": {
+                                "BackupIntentConcat": "[concat('/Azure/vm;iaasvmcontainerv2;',parameters('VMRG'),';',parameters('VMName'))]",
+                                "VaultName": "[if(contains(subscription().displayName,'Production'),concat('vault-backup-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-prod-001'),concat('vault-backup-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-tst-001'))]",
+                                "ResourceGroupName": "[if(contains(subscription().displayName,'Production'),concat('rg-backup-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-prod-001'),concat('rg-backup-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-tst-001'))]"
+                            },
+                            "resources": [{
+                                "apiVersion": "2017-05-10",
+                                "name": "[concat(parameters('VMName'), '-' , 'BackupIntent')]",
+                                "type": "Microsoft.Resources/deployments",
+                                "resourceGroup": "[variables('ResourceGroupName')]",
+                                "subscriptionId": "[subscription().subscriptionId]",
+                                "properties": {
+                                    "mode": "Incremental",
+                                    "template": {
+                                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                        "contentVersion": "1.0.0.0",
+                                        "resources": [{
+                                            "name": "[concat(variables('VaultName'),variables('BackupIntentConcat'))]",
+                                            "apiVersion": "2017-07-01",
+                                            "type": "Microsoft.RecoveryServices/vaults/backupFabrics/backupProtectionIntent",
+                                            "properties": {
+                                                "protectionIntentItemType": "AzureResourceItem",
+                                                "policyId": "[concat(resourceId('Microsoft.RecoveryServices/vaults/backuppolicies',variables('VaultName'),'Bluestep_AzureVM'))]",
+                                                "sourceResourceId": "[concat(resourceId('Microsoft.Compute/virtualMachines',parameters('VMName')))]"
+                                            }
+                                        }]
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

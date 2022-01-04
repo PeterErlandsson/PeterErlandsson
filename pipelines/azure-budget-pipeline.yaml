@@ -1,0 +1,148 @@
+name: 'Bluestep Azure Budget'
+trigger: none
+
+variables:
+  solution: 'bluestep-budget'
+  artifactName: 'azure-budget-artifact'
+  ServiceConnection: 'Bluestep Root Management Group'
+  environment: 'Bluestep-Production'
+
+parameters:
+- name: ListOfDepartmentNames
+  type: object
+  default:
+  - BICC
+  - Connectivity
+  - CoreBanking
+  - Finance
+  - Infrastructure
+  - ITSecurity
+  - Management
+  - Shared
+  - Web
+  - Old
+pool:
+  vmImage: "windows-latest"
+
+stages:
+- stage: Build
+  jobs:
+  - job: UploadArtifact
+    steps: 
+    - checkout: self
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)\$(solution)'
+        Contents: '**'
+        TargetFolder: '$(Pipeline.Workspace)\$(solution)'
+    - task: AzurePowerShell@5
+      displayName: 'Build the artifact using PowerShell'
+      inputs:
+        azureSubscription: '$(ServiceConnection)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(solution)\scripts\Build.ps1'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(solution)'
+        pwsh: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)\$(solution)'
+        flattenFolders: false
+        Contents: |
+          *.bicep
+          *.json
+          modules\*.*
+          deploy.ps1
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
+- stage: Validate
+  dependsOn: Build
+  jobs:
+  - job: ValidateARMTTK
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - ${{ each department in parameters.ListOfDepartmentNames }}:
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: '${{ department }} - Validation'
+        inputs:
+          deploymentScope: 'Management Group'
+          azureResourceManagerConnection: '$(ServiceConnection)'
+          location: 'West Europe'
+          templateLocation: 'Linked artifact'
+          csmFile: '$(Pipeline.Workspace)\$(artifactName)\${{ department }}.json'
+          deploymentMode: 'Validation'
+      - task: AzurePowerShell@5
+        displayName: '${{ department }} - ARM-TTK validation'
+        inputs:
+          azureSubscription: '$(ServiceConnection)'
+          ScriptType: 'inlineScript'
+          Inline: |
+            Write-Verbose "Downloading the latest version of ARM-TTK from github, please wait.." -Verbose
+            Git clone https://github.com/Azure/arm-ttk.git "$env:TMP\git"
+            Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+            Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\${{ department }}.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Location-Should-Not-Be-Hardcoded','Template-Should-Not-Contain-Blanks')
+          azurePowerShellVersion: 'LatestVersion'
+          scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+          pwsh: true
+- stage: WhatIf
+  dependsOn: Validate
+  jobs:
+  - job: WhatIfDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - ${{ each department in parameters.ListOfDepartmentNames }}:
+      - task: AzurePowerShell@5
+        displayName: '${{ department }} - Whatif'
+        inputs:
+          azureSubscription: '$(ServiceConnection)'
+          ScriptType: 'FilePath'
+          ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+          ScriptArguments: -Whatif -TemplateFile ${{ department }}.json
+          azurePowerShellVersion: 'LatestVersion'
+          workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+          pwsh: true
+- stage: Deploy
+  dependsOn: WhatIf
+  jobs:
+  - job: Predeploy
+    displayName: Download artifact
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+  - deployment: DeployBudget
+    dependsOn: Predeploy
+    displayName: Deploy Azure Budgets
+    environment: '$(environment)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - ${{ each department in parameters.ListOfDepartmentNames }}:
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: '${{ department }} - Deploy'
+            inputs:
+              deploymentName: 'Azure-Budget-deployment'
+              deploymentScope: 'Management Group'
+              azureResourceManagerConnection: '$(ServiceConnection)'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Pipeline.Workspace)\$(artifactName)\${{ department }}.json'
+              deploymentMode: 'Incremental'

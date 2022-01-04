@@ -1,0 +1,216 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.3.255.40792",
+      "templateHash": "11071442200045526097"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "VnetSpoke": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "vnet-infrastructure-test",
+          "id": "/subscriptions/86d71566-8cbd-4e51-a115-fd7e0df0c3a0/resourceGroups/rg-spoke-test/providers/Microsoft.Network/virtualNetworks/vnet-infrastructure-test"
+        }
+      ]
+    },
+    "dnsServers": {
+      "type": "array",
+      "defaultValue": [
+        "10.126.196.20",
+        "10.126.196.22",
+        "10.126.0.11",
+        "10.126.0.12"
+      ]
+    },
+    "firewallIPRange": {
+      "type": "string",
+      "defaultValue": "10.129.144.0/21"
+    },
+    "firewallPolicySKU": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ]
+    },
+    "firewallSKU": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ]
+    },
+    "firewallThreatIntelMode": {
+      "type": "string",
+      "defaultValue": "Deny",
+      "allowedValues": [
+        "Alert",
+        "Deny",
+        "Off"
+      ]
+    },
+    "firewallDNSProxyMode": {
+      "type": "bool",
+      "defaultValue": true
+    }
+  },
+  "functions": [],
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualWans",
+      "apiVersion": "2020-11-01",
+      "name": "vwan-hub-prod-001",
+      "location": "[parameters('location')]",
+      "properties": {
+        "allowBranchToBranchTraffic": true,
+        "allowVnetToVnetTraffic": true,
+        "disableVpnEncryption": false,
+        "office365LocalBreakoutCategory": "None",
+        "type": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2020-11-01",
+      "name": "vhub-prod-001",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressPrefix": "[parameters('firewallIPRange')]",
+        "virtualWan": {
+          "id": "[resourceId('Microsoft.Network/virtualWans', 'vwan-hub-prod-001')]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualWans', 'vwan-hub-prod-001')]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "virtualhubconnection",
+        "count": "[length(parameters('VnetSpoke'))]"
+      },
+      "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+      "apiVersion": "2020-06-01",
+      "name": "[format('{0}/hub-{1}', 'vhub-prod-001', parameters('VnetSpoke')[copyIndex()].name)]",
+      "properties": {
+        "enableInternetSecurity": true,
+        "allowRemoteVnetToUseHubVnetGateways": true,
+        "remoteVirtualNetwork": {
+          "id": "[parameters('VnetSpoke')[copyIndex()].id]"
+        },
+        "routingConfiguration": {
+          "associatedRouteTable": {
+            "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[0], split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[1])]"
+          },
+          "propagatedRouteTables": {
+            "ids": [
+              {
+                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[0], split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[1])]"
+              }
+            ],
+            "labels": [
+              "vnet"
+            ]
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[0], split(format('{0}/RT-fw-vnet', 'vhub-prod-001'), '/')[1])]",
+        "[resourceId('Microsoft.Network/virtualHubs', 'vhub-prod-001')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+      "apiVersion": "2020-11-01",
+      "name": "[format('{0}/RT-fw-vnet', 'vhub-prod-001')]",
+      "properties": {
+        "labels": [
+          "vnet"
+        ],
+        "routes": [
+          {
+            "name": "SpokeToFirewall",
+            "destinationType": "CIDR",
+            "destinations": [
+              "10.128.0.0/15"
+            ],
+            "nextHop": "[resourceId('Microsoft.Network/azureFirewalls', 'fw-hub-we')]",
+            "nextHopType": "ResourceId"
+          },
+          {
+            "name": "InternetToFirewall",
+            "destinationType": "CIDR",
+            "destinations": [
+              "0.0.0.0/0"
+            ],
+            "nextHop": "[resourceId('Microsoft.Network/azureFirewalls', 'fw-hub-we')]",
+            "nextHopType": "ResourceId"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/azureFirewalls', 'fw-hub-we')]",
+        "[resourceId('Microsoft.Network/virtualHubs', 'vhub-prod-001')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/firewallPolicies",
+      "apiVersion": "2020-07-01",
+      "name": "fwp-hub-we",
+      "location": "[parameters('location')]",
+      "properties": {
+        "threatIntelMode": "[parameters('firewallThreatIntelMode')]",
+        "dnsSettings": {
+          "servers": "[parameters('dnsServers')]",
+          "enableProxy": "[parameters('firewallDNSProxyMode')]"
+        },
+        "sku": {
+          "tier": "[parameters('firewallPolicySKU')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/azureFirewalls",
+      "apiVersion": "2020-07-01",
+      "name": "fw-hub-we",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "AZFW_Hub",
+          "tier": "[parameters('firewallSKU')]"
+        },
+        "hubIPAddresses": {
+          "publicIPs": {
+            "count": 1
+          }
+        },
+        "virtualHub": {
+          "id": "[resourceId('Microsoft.Network/virtualHubs', 'vhub-prod-001')]"
+        },
+        "firewallPolicy": {
+          "id": "[resourceId('Microsoft.Network/firewallPolicies', 'fwp-hub-we')]"
+        }
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/firewallPolicies', 'fwp-hub-we')]",
+        "[resourceId('Microsoft.Network/virtualHubs', 'vhub-prod-001')]"
+      ]
+    }
+  ]
+}

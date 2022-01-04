@@ -1,0 +1,70 @@
+{
+    "adminEligibleSettings": [
+            {
+                "ruleIdentifier": "ExpirationRule",
+                "setting": "{\"permanentAssignment\":true,\"maximumGrantPeriodInMinutes\":129600}"
+            },
+            {
+                "ruleIdentifier": "AttributeConditionRule",
+                "setting": "{\"condition\":null,\"conditionVersion\":null,\"conditionDescription\":null,\"enableEnforcement\":false}"
+            },
+            {
+                "ruleIdentifier": "MfaRule",
+                "setting": "{\"mfaRequired\":false}"
+            }
+        ],
+        "adminMemberSettings": [
+            {
+                "ruleIdentifier": "ExpirationRule",
+                "setting": "{\"permanentAssignment\":true,\"maximumGrantPeriodInMinutes\":259200}"
+            },
+            {
+                "ruleIdentifier": "MfaRule",
+                "setting": "{\"mfaRequired\":false}"
+            },
+            {
+                "ruleIdentifier": "JustificationRule",
+                "setting": "{\"required\":false}"
+            },
+            {
+                "ruleIdentifier": "AttributeConditionRule",
+                "setting": "{\"condition\":null,\"conditionVersion\":null,\"conditionDescription\":null,\"enableEnforcement\":false}"
+            }
+        ],
+        "userEligibleSettings": [
+            {
+                "ruleIdentifier": "AttributeConditionRule",
+                "setting": "{\"condition\":null,\"conditionVersion\":null,\"conditionDescription\":null,\"enableEnforcement\":false}"
+            }
+        ],
+        "userMemberSettings": [
+            {
+                "ruleIdentifier": "ExpirationRule",
+                "setting": "{\"permanentAssignment\":true,\"maximumGrantPeriodInMinutes\":240}"
+            },
+            {
+                "ruleIdentifier": "MfaRule",
+                "setting": "{\"mfaRequired\":false}"
+            },
+            {
+                "ruleIdentifier": "JustificationRule",
+                "setting": "{\"required\":true}"
+            },
+            {
+                "ruleIdentifier": "TicketingRule",
+                "setting": "{\"ticketingRequired\":false}"
+            },
+            {
+                "ruleIdentifier": "ApprovalRule",
+                "setting": "{\"Approvers\":[]}"
+            },
+            {
+                "ruleIdentifier": "AcrsRule",
+                "setting": "{\"acrsRequired\":false,\"acrs\":\"\"}"
+            },
+            {
+                "ruleIdentifier": "AttributeConditionRule",
+                "setting": "{\"condition\":null,\"conditionVersion\":null,\"conditionDescription\":null,\"enableEnforcement\":false}"
+            }
+        ]
+    }

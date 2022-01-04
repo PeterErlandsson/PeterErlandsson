@@ -1,0 +1,49 @@
+{
+    "Description": "This baseline contains test specific Policies",
+    "DisplayName": "Bluestep - Azure policy baseline initiative - Test",
+    "Parameters": {
+        "listOfAllowedSKUs": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Allowed VM-sizes",
+                "strongType": "VMSKUs"
+            },
+            "defaultValue": [
+                "Standard_B2ms",
+                "Standard_B4ms",
+                "Standard_B8ms",
+                "Standard_B12ms",
+                "Standard_B1s",
+                "Standard_B2s",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D2s_v4",
+                "Standard_D4s_v4",
+                "Standard_D8s_v4",
+                "Standard_DS1_v2",
+                "Standard_DS2_v2",
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2",
+                "Standard_DS11_v2",
+                "Standard_E2as_v4",
+                "Standard_E4as_v4",
+                "Standard_E8as_v4"
+            ]
+        }
+    },
+    "PolicyDefinitions": [
+        {
+            "policyDefinitionReferenceId": "VMSizesAllowed",
+            "policyDefinitionId": "bluestep-VMSizesAllowed",
+            "parameters": {
+                "effect": {
+                    "value": "Deny"
+                },
+                "listOfAllowedSKUs": {
+                    "value": "[parameters('listOfAllowedSKUs')]"
+                }
+            }
+        }
+    ]
+}

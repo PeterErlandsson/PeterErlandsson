@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "value": ""
+        },
+        "serverFarmId": {
+            "value": ""
+        },
+        "dockerRegistryUrl": {
+            "value": "acr.azurecr.io"
+        },
+        "dockerRegistryUserName": {
+            "value": ""
+        },
+        "dockerRegistryPassword": {
+            "value": ""
+        },
+        "dockerImageName": {
+            "value": "acr.azurecr.io/logintool:latest"
+        },
+        "subnetId": {
+            "value": ""
+        },
+        "appSettings": {
+            "value": {
+                // "CONTENT": "<html><body bgcolor=\"green\"><h1 style=\"color:white;\">TJOSAN</h1></body></html>"
+            }
+        },
+        "appClientId": {
+            "value": ""
+        },
+        "tenantId": {
+            "value": ""
+        },
+        "allowedAudiences": {
+            "value": [
+                // "https://logincontainerapp.azurewebsites.net"
+            ]
+        },
+        "location": {
+            "value": "westeurope"
+        },
+        "customHostname": {
+            "value": ""
+        },
+        "enableSSL": {
+            "value": ""
+        },
+        "httpsOnly": {
+            "value": true
+        },
+        "privatelinkSubnetId": {
+            "value": ""
+        },
+        "environment": {
+            "value": ""
+        }
+    }
+}

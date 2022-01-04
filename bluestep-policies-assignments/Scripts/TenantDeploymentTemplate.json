@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {
+        "Deployments": {}
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "name": "nestedMG",
+            "scope": "[concat('Microsoft.Management/managementGroups/', variables('Deployments')[copyIndex()].mgName)]",
+            "location": "westeurope",
+            "properties": {
+                "mode": "Incremental",
+                "template": "[variables('Deployments')[copyIndex()].deploymentTemplate]"
+            },
+            "copy": {
+                "Name": "ManagementCopy",
+                "count": "[length(variables('Deployments'))]"
+            }
+        }
+    ],
+    "outputs": {}
+}

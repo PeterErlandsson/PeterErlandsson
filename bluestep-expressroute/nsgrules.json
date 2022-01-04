@@ -1,0 +1,1000 @@
+{
+  "name": "bstp-nsg-hub-we",
+  "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we",
+  "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+  "type": "Microsoft.Network/networkSecurityGroups",
+  "location": "westeurope",
+  "tags": {
+    "HUB": "",
+    "NSG": "",
+    "General": ""
+  },
+  "properties": {
+    "provisioningState": "Succeeded",
+    "resourceGuid": "4ce3a34f-a2e5-4c5f-bab0-d5500668af64",
+    "securityRules": [
+      {
+        "name": "RDP",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/RDP",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "3389",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 102,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "192.168.65.0/24",
+            "10.126.40.0/24",
+            "10.126.34.0/24",
+            "10.126.196.64/28",
+            "10.126.0.16",
+            "10.126.50.0/23"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow_DCtoDC",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_DCtoDC",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "access": "Allow",
+          "priority": 100,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "25",
+            "53",
+            "67",
+            "88",
+            "123",
+            "135",
+            "137-139",
+            "389",
+            "445",
+            "464",
+            "636",
+            "2535",
+            "3268-3269",
+            "5722",
+            "9389",
+            "49152-65535"
+          ],
+          "sourceAddressPrefixes": [
+            "10.126.196.20",
+            "10.126.196.22"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.20",
+            "10.126.196.22"
+          ]
+        }
+      },
+      {
+        "name": "Allow_DCPorts_from_OnPremDC_To_AzDC",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_DCPorts_from_OnPremDC_To_AzDC",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "access": "Allow",
+          "priority": 101,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "25",
+            "53",
+            "67",
+            "88",
+            "123",
+            "135",
+            "137-139",
+            "389",
+            "445",
+            "464",
+            "636",
+            "2535",
+            "3268-3269",
+            "5722",
+            "9389",
+            "49152-65535"
+          ],
+          "sourceAddressPrefixes": [
+            "10.126.0.11",
+            "10.126.0.12"
+          ],
+          "destinationAddressPrefixes": [],
+          "destinationApplicationSecurityGroups": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/applicationSecurityGroups/bstp-cdpnet-dc-asg-we"
+            }
+          ]
+        }
+      },
+      {
+        "name": "AllowDNSLookup",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowDNSLookup",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "53",
+          "access": "Allow",
+          "priority": 103,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.128.0/20",
+            "10.126.144.0/20",
+            "10.126.194.0/24",
+            "10.126.192.0/24",
+            "10.126.196.0/23"
+          ],
+          "destinationAddressPrefixes": [],
+          "destinationApplicationSecurityGroups": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/applicationSecurityGroups/bstp-cdpnet-dc-asg-we"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Allow_RFC1918toDC",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_RFC1918toDC",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "access": "Allow",
+          "priority": 104,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "25",
+            "53",
+            "67",
+            "88",
+            "123",
+            "135",
+            "137-139",
+            "389",
+            "445",
+            "464",
+            "636",
+            "2535",
+            "3268-3269",
+            "5722",
+            "9389",
+            "49152-65535"
+          ],
+          "sourceAddressPrefixes": [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.20",
+            "10.126.196.22"
+          ]
+        }
+      },
+      {
+        "name": "adfs_to_adfs",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/adfs_to_adfs",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Rule to allow traffic between adfs servers",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "access": "Allow",
+          "priority": 105,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37",
+            "10.126.196.38"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37",
+            "10.126.196.38"
+          ]
+        }
+      },
+      {
+        "name": "Allow_WAP_To_ADFS_HTTPS",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_WAP_To_ADFS_HTTPS",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow traffic from wap to adfs HTTPS",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "access": "Allow",
+          "priority": 106,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54",
+            "52.137.57.9"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37",
+            "10.126.196.38"
+          ]
+        }
+      },
+      {
+        "name": "Allow_RFC1918_ADFS_443",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_RFC1918_ADFS_443",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "access": "Allow",
+          "priority": 107,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37",
+            "10.126.196.38"
+          ]
+        }
+      },
+      {
+        "name": "allow_npm_from_onprem_to_jumpsrvtest",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/allow_npm_from_onprem_to_jumpsrvtest",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "8084",
+          "sourceAddressPrefix": "10.126.13.11",
+          "destinationAddressPrefix": "10.126.128.21",
+          "access": "Allow",
+          "priority": 110,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Deny_All",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Deny_All",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Deny",
+          "priority": 4096,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow-RDP-Vnet",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow-RDP-Vnet",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow RDP from Vnet",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "3389",
+          "sourceAddressPrefix": "VirtualNetwork",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 200,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow-HTTPS-From-Everywhere",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow-HTTPS-From-Everywhere",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow HTTPS from Everywhere",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "sourceAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 201,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54"
+          ]
+        }
+      },
+      {
+        "name": "Allow-https-internet",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow-https-internet",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "destinationAddressPrefix": "Internet",
+          "access": "Allow",
+          "priority": 210,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow-wap-https-adfs",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow-wap-https-adfs",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allows Https from wap to adfs and lb",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "access": "Allow",
+          "priority": 220,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54"
+          ],
+          "destinationAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37",
+            "10.126.196.38"
+          ]
+        }
+      },
+      {
+        "name": "Deny-All",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Deny-All",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Deny",
+          "priority": 221,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowAzureLoadBalancer",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowAzureLoadBalancer",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "AzureLoadBalancer",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 4095,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowAzureLoabbalancer",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowAzureLoabbalancer",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "AzureLoadBalancer",
+          "access": "Allow",
+          "priority": 200,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AD_Audit_Incoming",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AD_Audit_Incoming",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Incoming ports from AD Audit to ADFS",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.126.1.5",
+          "access": "Allow",
+          "priority": 108,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "135",
+            "137",
+            "138",
+            "139",
+            "445",
+            "49152-65535"
+          ],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": [
+            "10.126.196.36",
+            "10.126.196.37"
+          ]
+        }
+      },
+      {
+        "name": "AllowWacToRFC1918",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowWacToRFC1918",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "5985",
+          "sourceAddressPrefix": "10.126.196.132",
+          "access": "Allow",
+          "priority": 111,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": [
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16"
+          ]
+        }
+      },
+      {
+        "name": "AllowadfstowacTEMP",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowadfstowacTEMP",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.126.196.36",
+          "destinationAddressPrefix": "10.126.196.132",
+          "access": "Allow",
+          "priority": 112,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "3389",
+            "445",
+            "443",
+            "5985"
+          ],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow_All_Outbound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_All_Outbound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow All outboind except wap.",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 222,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allowhktowachttps",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allowhktowachttps",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "destinationAddressPrefix": "10.126.196.132",
+          "access": "Allow",
+          "priority": 113,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.40.0/23",
+            "192.168.65.0/24"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowWapToSupportBluestep",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowWapToSupportBluestep",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "5721",
+          "destinationAddressPrefix": "217.151.196.229",
+          "access": "Allow",
+          "priority": 211,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.196.53",
+            "10.126.196.54"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AD_Audit_Incoming_DCs",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AD_Audit_Incoming_DCs",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Incoming ports from AD Audit to DCs",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "sourceAddressPrefix": "10.126.1.5",
+          "access": "Allow",
+          "priority": 109,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "389",
+            "636",
+            "3268",
+            "3269",
+            "88",
+            "135",
+            "137",
+            "138",
+            "139",
+            "445",
+            "49152-65535"
+          ],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": [
+            "10.126.196.22",
+            "10.126.196.20"
+          ]
+        }
+      },
+      {
+        "name": "AllowAxiansF5ToNPS",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowAxiansF5ToNPS",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Azure MFA extension",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "10.126.196.39",
+          "access": "Allow",
+          "priority": 114,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [
+            "1812",
+            "1813"
+          ],
+          "sourceAddressPrefixes": [
+            "10.126.22.250",
+            "10.126.22.251",
+            "10.126.22.252"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowAxiansF5PingToNPS",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/AllowAxiansF5PingToNPS",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "ICMP",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "destinationAddressPrefix": "10.126.196.39",
+          "access": "Allow",
+          "priority": 115,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.22.250",
+            "10.126.22.251",
+            "10.126.22.252"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Deny_Internet_To_AZ-VS-03",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Deny_Internet_To_AZ-VS-03",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "10.126.196.149",
+          "access": "Deny",
+          "priority": 120,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Deny_Internet_To_AZ-VS-03_Public",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Deny_Internet_To_AZ-VS-03_Public",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "52.174.180.121",
+          "access": "Deny",
+          "priority": 119,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow_AZ-VS-03_To_HUB_Vnet",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_AZ-VS-03_To_HUB_Vnet",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "10.126.196.149",
+          "destinationAddressPrefix": "10.126.196.0/23",
+          "access": "Allow",
+          "priority": 116,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow_BS_VPN_TO_WAC",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_BS_VPN_TO_WAC",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "destinationAddressPrefix": "10.126.196.132",
+          "access": "Allow",
+          "priority": 121,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [
+            "10.126.34.0/24",
+            "10.126.50.0/23"
+          ],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "Allow_Jumphub_TO_WAC",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/securityRules/Allow_Jumphub_TO_WAC",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "sourceAddressPrefix": "10.126.196.68",
+          "destinationAddressPrefix": "10.126.196.132",
+          "access": "Allow",
+          "priority": 122,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      }
+    ],
+    "defaultSecurityRules": [
+      {
+        "name": "AllowVnetInBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/AllowVnetInBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow inbound traffic from all VMs in VNET",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "VirtualNetwork",
+          "destinationAddressPrefix": "VirtualNetwork",
+          "access": "Allow",
+          "priority": 65000,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowAzureLoadBalancerInBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow inbound traffic from azure load balancer",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "AzureLoadBalancer",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 65001,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "DenyAllInBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/DenyAllInBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Deny all inbound traffic",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Deny",
+          "priority": 65500,
+          "direction": "Inbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowVnetOutBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/AllowVnetOutBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "VirtualNetwork",
+          "destinationAddressPrefix": "VirtualNetwork",
+          "access": "Allow",
+          "priority": 65000,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "AllowInternetOutBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/AllowInternetOutBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Allow outbound traffic from all VMs to Internet",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "Internet",
+          "access": "Allow",
+          "priority": 65001,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      },
+      {
+        "name": "DenyAllOutBound",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we/defaultSecurityRules/DenyAllOutBound",
+        "etag": "W/\"4c65225f-24f2-42a4-93fc-09a34a0cc8ad\"",
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "description": "Deny all outbound traffic",
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "*",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Deny",
+          "priority": 65500,
+          "direction": "Outbound",
+          "sourcePortRanges": [],
+          "destinationPortRanges": [],
+          "sourceAddressPrefixes": [],
+          "destinationAddressPrefixes": []
+        }
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-mftdemo-hub-we/providers/Microsoft.Network/networkInterfaces/bstp-mftdemo-01613"
+      }
+    ],
+    "subnets": [
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-adfs-proxy-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-wac-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-mgmnt-jmp-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-dc-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-adfs-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-vs-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-adf-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-bi-subnet-we"
+      },
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-filehub-subnet-we"
+      }
+    ],
+    "flowLogs": [
+      {
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_westeurope/flowLogs/Microsoft.Networkbstp-nsg-hub-rg-webstp-nsg-hub-we"
+      }
+    ]
+  }
+}

@@ -1,0 +1,424 @@
+{
+    "Description": "This baseline contains Production specific Policies",
+    "DisplayName": "Bluestep - Azure policy baseline initiative - PROD",
+    "Parameters": {
+        "logAnalyticsWorkspaceId": {
+            "type": "String",
+            "defaultValue": "/subscriptions/d903b703-93ed-43c2-ad4c-0c3815e44fba/resourceGroups/rg-centrallog-shared-001/providers/Microsoft.OperationalInsights/workspaces/log-central-prod-we-001"
+        },
+        "diagnosticsSettingNameToUse": {
+            "type": "String",
+            "defaultvalue": "BluestepDiagnosticsLogsToWorkspace"
+        },
+        "listOfAllowedSKUs": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Allowed VM-sizes",
+                "strongType": "VMSKUs"
+            },
+            "defaultValue": [
+                "Standard_B2ms",
+                "Standard_B4ms",
+                "Standard_B8ms",
+                "Standard_B12ms",
+                "Standard_B1s",
+                "Standard_B2s",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2",
+                "Standard_D2s_v4",
+                "Standard_D4s_v4",
+                "Standard_D8s_v4",
+                "Standard_DS1_v2",
+                "Standard_DS2_v2",
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2",
+                "Standard_D16s_v4",
+                "Standard_D32s_v4",
+                "Standard_DS11_v2",
+                "Standard_DS12_v2",
+                "Standard_E2as_v4",
+                "Standard_E4as_v4",
+                "Standard_E8as_v4",
+                "Standard_E16as_v4",
+                "Standard_E20as_v4"
+            ]
+        }
+    },
+    "PolicyDefinitions": [
+        {
+            "policyDefinitionReferenceId": "MonitorDiagnosticSettingsForAzureVM",
+            "policyDefinitionId": "bluestep-MonitorDiagnosticSettingsForAzureVM",
+            "parameters": {
+                "logAnalyticsWorkspaceId": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "effect": {
+                    "value": "AuditIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforAzureKeyVault",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforAzureKeyVault",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "AuditEventEnabled": {
+                    "value": "True"
+                },
+                "AllMetricsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforAzureKubernetesService",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforAzureKubernetesService",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                },
+                "diagnosticsSettingNameToUse": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "AllMetrics": {
+                    "value": "False"
+                },
+                "kube-apiserver": {
+                    "value": "True"
+                },
+                "kube-audit": {
+                    "value": "False"
+                },
+                "kube-controller-manager": {
+                    "value": "True"
+                },
+                "kube-scheduler": {
+                    "value": "True"
+                },
+                "cluster-autoscaler": {
+                    "value": "True"
+                },
+                "kube-audit-admin": {
+                    "value": "True"
+                },
+                "guard": {
+                    "value": "True"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforAzureSQLdatabaseservers",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforAzureSQLdatabaseservers",
+            "parameters": {
+                "logAnalyticsWorkspaceId": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforBatchAccount",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforBatchAccount",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforDataLakeAnalytics",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforDataLakeAnalytics",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforDataLakeStorageGen1",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforDataLakeStorageGen1",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforEventHub",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforEventHub",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforLogicApps",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforLogicApps",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforRecoveryServicesVault",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforRecoveryServicesVault",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "tagName": {
+                    "value": "ExcludeFromLogs"
+                },
+                "tagValue": {
+                    "value": "True"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforSearchServices",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforSearchServices",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforSQLDatabases",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforSQLDatabases",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "diagnosticsSettingNameToUse": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "QueryStoreRuntimeStatisticsEnabled": {
+                    "value": "False"
+                },
+                "QueryStoreWaitStatisticsEnabled": {
+                    "value": "True"
+                },
+                "ErrorsEnabled": {
+                    "value": "True"
+                },
+                "DatabaseWaitStatisticsEnabled": {
+                    "value": "True"
+                },
+                "BlocksEnabled": {
+                    "value": "True"
+                },
+                "SQLInsightsEnabled": {
+                    "value": "True"
+                },
+                "SQLSecurityAuditEventsEnabled": {
+                    "value": "True"
+                },
+                "TimeoutsEnabled": {
+                    "value": "True"
+                },
+                "AutomaticTuningEnabled": {
+                    "value": "True"
+                },
+                "DeadlocksEnabled": {
+                    "value": "True"
+                },
+                "Basic": {
+                    "value": "True"
+                },
+                "InstanceAndAppAdvanced": {
+                    "value": "True"
+                },
+                "WorkloadManagement": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforstorageaccounts",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforstorageaccounts",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "diagnosticsSettingNameToUse": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "servicesToDeploy": {
+                    "value": [
+                        "storageAccounts",
+                        "blobServices",
+                        "fileServices",
+                        "tableServices",
+                        "queueServices"
+                    ]
+                },
+                "StorageDelete": {
+                    "value": "True"
+                },
+                "StorageWrite": {
+                    "value": "True"
+                },
+                "StorageRead": {
+                    "value": "True"
+                },
+                "Transaction": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "DiagnosticSettingsforStreamAnalytics",
+            "policyDefinitionId": "bluestep-DiagnosticSettingsforStreamAnalytics",
+            "parameters": {
+                "logAnalytics": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                },
+                "profileName": {
+                    "value": "[parameters('diagnosticsSettingNameToUse')]"
+                },
+                "metricsEnabled": {
+                    "value": "False"
+                },
+                "logsEnabled": {
+                    "value": "True"
+                },
+                "effect": {
+                    "value": "DeployIfNotExists"
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "VMWindowsAzureMonitorAgent",
+            "policyDefinitionId": "bluestep-VMWindowsAzureMonitorAgent",
+            "parameters": {
+                "effect": {
+                    "value": "DeployIfNotExists"
+                },
+                "listOfWindowsImageIdToInclude": {
+                    "value": []
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "VMLinuxAzureMonitorAgent",
+            "policyDefinitionId": "bluestep-VMLinuxAzureMonitorAgent",
+            "parameters": {
+                "effect": {
+                    "value": "DeployIfNotExists"
+                },
+                "listOfLinuxImageIdToInclude": {
+                    "value": []
+                }
+            }
+        },
+        {
+            "policyDefinitionReferenceId": "VMSizesAllowed",
+            "policyDefinitionId": "bluestep-VMSizesAllowed",
+            "parameters": {
+                "effect": {
+                    "value": "Deny"
+                },
+                "listOfAllowedSKUs": {
+                    "value": "[parameters('listOfAllowedSKUs')]"
+                }
+            }
+        }
+    ]
+}

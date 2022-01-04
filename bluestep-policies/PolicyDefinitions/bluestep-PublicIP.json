@@ -1,0 +1,28 @@
+{
+    "Description": "This policy enables you to restrict the use of public IPs.",
+    "DisplayName": "Bluestep - Public IP",
+    "Metadata": {
+        "version": "1.0.0",
+        "category": "General"
+    },
+    "Mode": "All",
+    "parameters": {},
+    "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.Network/publicIPAddresses"
+            },
+            {
+              "field": "Microsoft.Network/publicIPAddresses/provisioningState",
+              "equals": "Succeeded"
+            }
+          ]
+        },
+        "then": {
+          "effect": "audit"
+        }
+    }
+      
+}

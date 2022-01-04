@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Departments": {
+      "type": "array",
+      "defaultValue": [
+        "Infrastructure",
+        "Web",
+        "Data Management",
+        "Finance"
+      ]
+    }
+  },
+  "functions": [],
+  "resources": [
+    {
+      "type": "Microsoft.Subscription/aliases",
+      "apiVersion": "2020-09-01",
+      "name": "Shared Production",
+      "properties": {
+        "displayName": "Shared Production",
+        "workload": "Production"
+      }
+    },
+    {
+      "copy": {
+        "name": "ProdSubscriptions",
+        "count": "[length(parameters('Departments'))]"
+      },
+      "type": "Microsoft.Subscription/aliases",
+      "apiVersion": "2020-09-01",
+      "name": "[format('{0} Production', parameters('Departments')[copyIndex()])]",
+      "properties": {
+        "displayName": "[format('{0} Production', parameters('Departments')[copyIndex()])]",
+        "workload": "Production"
+      }
+    },
+    {
+      "copy": {
+        "name": "DevSubscription",
+        "count": "[length(parameters('Departments'))]"
+      },
+      "type": "Microsoft.Subscription/aliases",
+      "apiVersion": "2020-09-01",
+      "name": "[format('{0} Development', parameters('Departments')[copyIndex()])]",
+      "properties": {
+        "displayName": "[format('{0} Development', parameters('Departments')[copyIndex()])]",
+        "workload": "DevTest"
+      }
+    },
+    {
+      "copy": {
+        "name": "SandboxSubscription",
+        "count": "[length(parameters('Departments'))]"
+      },
+      "type": "Microsoft.Subscription/aliases",
+      "apiVersion": "2020-09-01",
+      "name": "[format('{0} Sandbox', parameters('Departments')[copyIndex()])]",
+      "properties": {
+        "displayName": "[format('{0} Sandbox', parameters('Departments')[copyIndex()])]",
+        "workload": "DevTest"
+      }
+    },
+    {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2020-05-01",
+      "name": "Bluestep",
+      "properties": {
+        "displayName": "Bluestep Bank AB",
+        "details": {
+          "parent": {
+            "id": "/providers/Microsoft.Management/managementGroups/1bab0d88-9e12-4b80-a8e6-5783c09b09fc"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2020-05-01",
+      "name": "BluestepProd",
+      "properties": {
+        "displayName": "Bluestep Production",
+        "details": {
+          "parent": {
+            "id": "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2020-05-01",
+      "name": "BluestepDev",
+      "properties": {
+        "displayName": "Bluestep Development",
+        "details": {
+          "parent": {
+            "id": "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2020-05-01",
+      "name": "BluestepSandbox",
+      "properties": {
+        "displayName": "Bluestep Sandbox",
+        "details": {
+          "parent": {
+            "id": "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[tenantResourceId('Microsoft.Management/managementGroups', 'Bluestep')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "ProdSubscriptions": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('Departments'))]",
+        "input": {
+          "id": "[reference(resourceId('Microsoft.Subscription/aliases', parameters('Departments')[copyIndex()]), '2020-09-01', 'full').subscriptionId]"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.3.1.62928",
+      "templateHash": "10262325797231792731"
+    }
+  }
+}

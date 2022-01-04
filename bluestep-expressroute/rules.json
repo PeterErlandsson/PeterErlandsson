@@ -1,0 +1,478 @@
+{
+  "name": "bstp-cpnet-infra-vnet01-we",
+  "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we",
+  "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+  "type": "Microsoft.Network/virtualNetworks",
+  "location": "westeurope",
+  "tags": {
+    "Hub": "",
+    "Storage": "",
+    "Logs": ""
+  },
+  "properties": {
+    "provisioningState": "Succeeded",
+    "resourceGuid": "dadc38a0-c433-4cfa-921f-864787e0ed6a",
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.126.196.0/23"
+      ]
+    },
+    "dhcpOptions": {
+      "dnsServers": [
+        "10.126.196.20",
+        "10.126.196.22",
+        "10.126.0.11",
+        "10.126.0.12"
+      ]
+    },
+    "subnets": [
+      {
+        "name": "GatewaySubnet",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/GatewaySubnet",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.96/27",
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworkGateways/bstp-cdpnet-vnetgw01-ER-we/ipConfigurations/default"
+            }
+          ],
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-mgmnt-jmp-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-mgmnt-jmp-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.64/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-net-jump-hub-we/providers/Microsoft.Network/networkInterfaces/az-jumphub-01295/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.Storage",
+              "locations": [
+                "westeurope",
+                "northeurope"
+              ]
+            }
+          ],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-cdpnet-adfs-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-adfs-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.32/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpfed-federation-we/providers/Microsoft.Network/networkInterfaces/az-adfs-01886/ipConfigurations/ipconfig1"
+            },
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpfed-federation-we/providers/Microsoft.Network/networkInterfaces/az-adfs-02319/ipConfigurations/ipconfig1"
+            },
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpfed-federation-we/providers/Microsoft.Network/loadBalancers/bstp-net-federation-lb-prod-we/frontendIPConfigurations/LoadBalancerFrontEnd"
+            },
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nps-hub-we/providers/Microsoft.Network/networkInterfaces/az-nps-01584/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.Storage",
+              "locations": [
+                "westeurope",
+                "northeurope"
+              ]
+            },
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.KeyVault",
+              "locations": [
+                "*"
+              ]
+            }
+          ],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-wac-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-wac-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.128/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-wac-rg-we/providers/Microsoft.Network/networkInterfaces/az-wac-0142/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.Storage",
+              "locations": [
+                "westeurope",
+                "northeurope"
+              ]
+            },
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.KeyVault",
+              "locations": [
+                "*"
+              ]
+            }
+          ],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-cdpnet-adfs-proxy-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-adfs-proxy-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.48/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-wap-prod-rg-we/providers/Microsoft.Network/networkInterfaces/az-wap-01212/ipConfigurations/ipconfig1"
+            },
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-wap-prod-rg-we/providers/Microsoft.Network/networkInterfaces/az-wap-02772/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.Storage",
+              "locations": [
+                "westeurope",
+                "northeurope"
+              ]
+            },
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.KeyVault",
+              "locations": [
+                "*"
+              ]
+            }
+          ],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-cdpnet-dc-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-cdpnet-dc-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.16/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/networkInterfaces/az-dc-0141/ipConfigurations/ipconfig1"
+            },
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/networkInterfaces/az-dc-02501/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.Storage",
+              "locations": [
+                "westeurope",
+                "northeurope"
+              ]
+            },
+            {
+              "provisioningState": "Succeeded",
+              "service": "Microsoft.KeyVault",
+              "locations": [
+                "*"
+              ]
+            }
+          ],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-vs-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-vs-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.144/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-vs-rg-we/providers/Microsoft.Network/networkInterfaces/AZ-VS-03VMNic/ipConfigurations/ipconfigAZ-VS-03"
+            }
+          ],
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-adf-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-adf-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.160/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-bi-hub-rg-we/providers/Microsoft.Network/networkInterfaces/bstp-net-adf-pe-we.nic.82549e56-ede9-4348-9387-8352925f140e/ipConfigurations/dataFactory-dataFactory.privateEndpoint"
+            }
+          ],
+          "privateEndpoints": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-bi-hub-rg-we/providers/Microsoft.Network/privateEndpoints/bstp-net-adf-pe-we"
+            }
+          ],
+          "serviceEndpoints": [],
+          "delegations": [],
+          "purpose": "PrivateEndpoints",
+          "privateEndpointNetworkPolicies": "Disabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-bi-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-bi-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.176/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Disabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "AzureFirewallSubnet",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/AzureFirewallSubnet",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.192/26",
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/azureFirewalls/bstp-net-azfw-hub-we/azureFirewallIpConfigurations/bstp-net-azfw-pip-hub-we"
+            }
+          ],
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-vdi-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-vdi-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.197.0/25",
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      },
+      {
+        "name": "bstp-net-filehub-subnet-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/subnets/bstp-net-filehub-subnet-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "addressPrefix": "10.126.196.80/28",
+          "networkSecurityGroup": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-nsg-hub-rg-we/providers/Microsoft.Network/networkSecurityGroups/bstp-nsg-hub-we"
+          },
+          "routeTable": {
+            "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-hub-rg-we/providers/Microsoft.Network/routeTables/bstp-net-hub-rt-we"
+          },
+          "ipConfigurations": [
+            {
+              "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-mftdemo-hub-we/providers/Microsoft.Network/networkInterfaces/bstp-mftdemo-01613/ipConfigurations/ipconfig1"
+            }
+          ],
+          "serviceEndpoints": [],
+          "delegations": [],
+          "privateEndpointNetworkPolicies": "Enabled",
+          "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "virtualNetworkPeerings": [
+      {
+        "name": "bstp-cdpnet-az-infra-devops-peer-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/virtualNetworkPeerings/bstp-cdpnet-az-infra-devops-peer-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "resourceGuid": "b07d14cc-7f2e-04c9-34cb-46665dac8d72",
+          "peeringState": "Connected",
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/4cce1b5c-7a0c-455a-a9b9-7de30b3433a5/resourceGroups/bstp-cdnet-devops-we/providers/Microsoft.Network/virtualNetworks/bstp-cdpnet-vnet01-we"
+          },
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": true,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.126.192.0/24",
+              "10.126.194.0/24"
+            ]
+          },
+          "routeServiceVips": {}
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      {
+        "name": "bstp-net-hub-az-test-peer-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/virtualNetworkPeerings/bstp-net-hub-az-test-peer-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "resourceGuid": "562e22cf-e5a2-0504-2354-ba0c44ef8a1b",
+          "peeringState": "Connected",
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/9bf93c12-d72e-4aee-abec-b8020eb869ab/resourceGroups/AZ-TEST-NETWORK-RG/providers/Microsoft.Network/virtualNetworks/AZ-TEST-NETWORK-VNET"
+          },
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": true,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.126.128.0/20",
+              "10.127.0.0/18"
+            ]
+          },
+          "routeServiceVips": {}
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      },
+      {
+        "name": "bstp-net-az-hub-prod-peer-we",
+        "id": "/subscriptions/d42486c4-f86c-4f3a-8ba9-9f5803e332d8/resourceGroups/bstp-cdpnet-infra-we/providers/Microsoft.Network/virtualNetworks/bstp-cpnet-infra-vnet01-we/virtualNetworkPeerings/bstp-net-az-hub-prod-peer-we",
+        "etag": "W/\"35db055a-26c5-4b9b-913b-d5d45fb11227\"",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "resourceGuid": "19b43742-4de8-0f4a-0591-2634d6a2166c",
+          "peeringState": "Connected",
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/9d957d40-b4aa-47b6-83ec-2f5bc899a938/resourceGroups/bstp-cdpnet-prod-vnet01-we/providers/Microsoft.Network/virtualNetworks/bstp-cdpnet-prod-vnet01-we"
+          },
+          "allowVirtualNetworkAccess": true,
+          "allowForwardedTraffic": true,
+          "allowGatewayTransit": true,
+          "useRemoteGateways": false,
+          "doNotVerifyRemoteGateways": false,
+          "remoteAddressSpace": {
+            "addressPrefixes": [
+              "10.126.144.0/20",
+              "10.127.64.0/18"
+            ]
+          },
+          "routeServiceVips": {}
+        },
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+      }
+    ],
+    "enableDdosProtection": false
+  }
+}

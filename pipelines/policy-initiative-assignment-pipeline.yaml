@@ -1,0 +1,118 @@
+name: 'Bluestep Azure policies assignment'
+trigger: none
+variables:
+  artifactName: 'policy-assignment-artifact'
+  Prod: 'Azure Root Management Group'
+  Test: 'Bluestep Test Management Group'
+  solution: 'bluestep-policies-assignments'
+  environmentProd: 'Azure-policy-production'
+
+pool:
+  vmImage: "windows-latest"
+
+stages:
+- stage: Build
+  jobs:
+  - job: UploadArtifact
+    steps: 
+    - checkout: self
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)\$(solution)'
+        Contents: '**'
+        TargetFolder: '$(Pipeline.Workspace)\$(solution)'
+    - task: AzurePowerShell@5
+      displayName: 'Build the artifact using PowerShell'
+      inputs:
+        azureSubscription: '$(Prod)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(solution)\Scripts\BuildPolicyAssigmentDeployments.ps1'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(solution)'
+        pwsh: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)\$(solution)'
+        flattenFolders: true
+        Contents: | 
+          deploy.ps1
+          artifact-assignment.json
+          Scripts\ARMValidation.ps1
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
+- stage: ValidateARM
+  dependsOn: Build
+  jobs:
+  - job: ValidateDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Prod)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\artifact-assignment.json'
+        deploymentMode: 'Validation'
+    - task: AzurePowerShell@5
+      displayName: 'ARM-TTK validation'
+      inputs:
+        azureSubscription: '$(Test)'
+        ScriptType: 'inlineScript'
+        Inline: |
+          Write-Verbose "Downloading the latest version of ARM-TTK from github, please wait.." -Verbose
+          Git clone https://github.com/Azure/arm-ttk.git "$env:TMP\git"
+          Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+          Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\artifact-assignment.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Template-Should-Not-Contain-Blanks','Location-Should-Not-Be-Hardcoded','Resources-Should-Have-Location')
+        azurePowerShellVersion: 'LatestVersion'
+        scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: WhatifDeploy
+  dependsOn: ValidateARM
+  jobs:
+  - job: WhatIfDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: '$(solution) Whatif'
+      inputs:
+        azureSubscription: '$(Prod)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+        ScriptArguments: -Whatif
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: Deploy_Prod
+  dependsOn: WhatifDeploy
+  jobs:
+  - deployment: DeployPolicies
+    displayName: Deploy Azure Policy assignments
+    environment: '$(environmentProd)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: 'Deploy $(solution)'
+          inputs:
+            azureSubscription: '$(Prod)'
+            ScriptType: 'FilePath'
+            ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+            azurePowerShellVersion: 'LatestVersion'
+            workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+            pwsh: true

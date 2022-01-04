@@ -1,0 +1,36 @@
+{
+    "Description": "Adds the default updatetag to virtual machines if tag exists with a different value, it will not be changed",
+    "DisplayName": "Bluestep - Tag virtual machines for updates",
+    "Metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+    },
+    "Mode": "Indexed",
+    "Parameters": {},
+    "policyRule": {
+        "if": {
+            "allof": [{
+                    "field": "type",
+                    "equals": "Microsoft.Compute/VirtualMachines"
+                },
+                {
+                    "field": "tags['updatemanagement']",
+                    "exists": "false"
+                }
+            ]
+        },
+        "then": {
+            "effect": "modify",
+            "details": {
+                "roleDefinitionIds": [
+                    "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                ],
+                "operations": [{
+                    "operation": "add",
+                    "field": "tags['updatemanagement']",
+                    "value": "wave2"
+                }]
+            }
+        }
+    }
+}

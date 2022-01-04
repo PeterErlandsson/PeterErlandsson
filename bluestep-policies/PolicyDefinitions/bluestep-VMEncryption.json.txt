@@ -1,0 +1,110 @@
+{
+    "Description": "Enables Azure Disk Encryption for Azure VMs",
+    "DisplayName": "Bluestep - Azure Disk Encryption for Azure VMs",
+    "Metadata": {
+        "version": "1.0.0",
+        "category": "Security"
+    },
+    "mode": "All",
+    "parameters": {},
+    "policyRule": {
+        "if": {
+            "allOf": [
+                {
+                    "field": "type",
+                    "equals": "Microsoft.Compute/virtualMachines"
+                },
+                {
+                    "field": "Microsoft.Compute/imagePublisher",
+                    "in": [
+                        "MicrosoftWindowsServer",
+                        "microsoftsqlserver",
+                        "microsoftwindowsdesktop",
+                        "MicrosoftVisualStudio",
+                        "canonical",
+                        "Canonical",
+                        "credativ"
+                    ]
+                }
+            ]
+        },
+        "then": {
+            "effect": "deployIfNotExists",
+            "details": {
+                "roleDefinitionIds": [
+                    "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                ],
+                "type": "Microsoft.Compute/virtualMachines/extensions",
+                "name": "AzureDiskEncryption",
+                "existenceCondition": {
+                    "allOf": [
+                        {
+                            "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                            "equals": "Microsoft.Azure.Security"
+                        },
+                        {
+                            "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                            "equals": "AzureDiskEncryption"
+                        },
+                        {
+                            "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                            "equals": "Succeeded"
+                        }
+                    ]
+                },
+                "deployment": {
+                    "properties": {
+                        "mode": "incremental",
+                        "parameters": {
+                            "AzureVM": {
+                                "value": "[field('name')]"
+                            },
+                            "Location": {
+                                "value": "[field('location')]"
+                            }
+                        },
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {
+                                "AzureVM": {
+                                    "type": "string"
+                                },
+                                "Location": {
+                                    "type": "string"
+                                }
+                            },
+                            "variables": {
+                                "VaultName": "[if(contains(subscription().displayName,'Production'),concat('kv-ade-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-prod-001'),concat('kv-ade-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-tst-001'))]",
+                                "Resourcegroup": "[if(contains(subscription().displayName,'Production'),concat('rg-ade-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-prod-001'),concat('rg-ade-',toLower(substring(replace(subscription().displayName,' ',''), 0, 5)),'-tst-001'))]"
+                            },
+                            "resources": [
+                                {
+                                    "apiVersion": "2019-03-01",
+                                    "name": "[concat(parameters('AzureVM'),'/AzureDiskEncryption')]",
+                                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                                    "location": "[parameters('location')]",
+                                    "properties": {
+                                        "publisher": "Microsoft.Azure.Security",
+                                        "type": "AzureDiskEncryption",
+                                        "typeHandlerVersion": "2.2",
+                                        "autoUpgradeMinorVersion": true,
+                                        "settings": {
+                                            "EncryptionOperation": "EnableEncryption",
+                                            "KeyEncryptionAlgorithm": "RSA-OAEP",
+                                            "KeyVaultURL": "[concat('https://',variables('VaultName'),'.vault.azure.net/')]",
+                                            "KeyEncryptionKeyURL": "[reference(resourceId(subscription().subscriptionId,variables('Resourcegroup'),'Microsoft.KeyVault/vaults/keys',variables('VaultName'),'BluestepKEK'),'2019-09-01','Full').properties.keyUriWithVersion]",
+                                            "KeyVaultResourceId": "[resourceId(subscription().subscriptionId,variables('Resourcegroup'),'Microsoft.KeyVault/vaults',variables('VaultName'))]",
+                                            "KekVaultResourceId": "[resourceId(subscription().subscriptionId,variables('Resourcegroup'),'Microsoft.KeyVault/vaults',variables('VaultName'))]",
+                                            "VolumeType": "All"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

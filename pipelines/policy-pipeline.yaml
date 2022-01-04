@@ -1,0 +1,116 @@
+name: 'Bluestep Azure policies'
+trigger: none
+
+variables:
+  solution: 'bluestep-policies'
+  artifactName: 'policy-artifact'
+  Prod: 'Bluestep Root Management Group'
+  Test: 'Bluestep Test Management Group'
+  environmentProd: 'Azure-policy-production'
+
+pool:
+  vmImage: "windows-latest"
+
+stages:
+- stage: Build
+  jobs:
+  - job: UploadArtifact
+    steps: 
+    - checkout: self
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)\Bluestep-policies'
+        Contents: '**'
+        TargetFolder: '$(Pipeline.Workspace)\Bluestep-policies'
+    - task: AzurePowerShell@5
+      displayName: 'Build the artifact using PowerShell'
+      inputs:
+        azureSubscription: '$(Prod)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\Bluestep-policies\scripts\BuildDeployments.ps1'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\Bluestep-policies'
+        pwsh: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)\Bluestep-policies'
+        flattenFolders: true
+        Contents: | 
+          deploy.ps1
+          artifact-policies.json
+          Scripts\ARMValidation.ps1
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'azure-policies-artifact'
+        publishLocation: 'Container'
+- stage: ValidateARM
+  dependsOn: Build
+  jobs:
+  - job: ValidateDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: 'azure-policies-artifact'
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Management Group'
+        azureResourceManagerConnection: '$(Prod)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\azure-policies-artifact\artifact-policies.json'
+        overrideParameters: '-topLevelManagementGroupPrefix Bluestep'
+        deploymentMode: 'Validation'
+    # - task: AzurePowerShell@5
+    #   displayName: 'ARM-TTK validation'
+    #   inputs:
+    #     azureSubscription: '$(Prod)'
+    #     ScriptType: 'FilePath'
+    #     ScriptPath: '$(Pipeline.Workspace)\azure-policies-artifact\ARMValidation.ps1'
+    #     azurePowerShellVersion: 'LatestVersion'
+    #     workingDirectory: '$(Pipeline.Workspace)\azure-policies-artifact'
+    #     pwsh: true
+- stage: WhatifDeploy
+  dependsOn: ValidateARM
+  jobs:
+  - job: WhatIfDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: 'azure-policies-artifact'
+    - task: AzurePowerShell@5
+      displayName: 'Bluestep Azure Policies Whatif'
+      inputs:
+        azureSubscription: '$(Prod)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\azure-policies-artifact\deploy.ps1'
+        ScriptArguments: -Whatif
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\azure-policies-artifact'
+        pwsh: true
+- stage: Deploy_Azure_policies
+  dependsOn: WhatifDeploy
+  jobs:
+  - deployment: DeployPolicies
+    displayName: Deploy Azure policies for all environments
+    environment: '$(environmentProd)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Management Group'
+            azureResourceManagerConnection: '$(Prod)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\azure-policies-artifact\artifact-policies.json'
+            overrideParameters: '-topLevelManagementGroupPrefix Bluestep'
+            deploymentMode: 'Incremental'

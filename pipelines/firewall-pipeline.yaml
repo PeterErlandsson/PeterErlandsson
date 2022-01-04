@@ -1,0 +1,124 @@
+name: 'Bluestep Azure Firewall'
+trigger: none
+
+variables:
+  solution: 'bluestep-firewall'
+  artifactName: 'azure-firewall-artifact'
+  Production: 'Bluestep Production Connectivity Subscription'
+  environmentProd: 'Bluestep-Production'
+  Subscriptionid: '2887160a-ea77-4845-aba8-644475701efa'
+  resourceGroupName: 'rg-hub-prod-we'
+
+pool:
+  vmImage: "windows-latest"
+
+stages:
+- stage: Build
+  jobs:
+  - job: UploadArtifact
+    steps: 
+    - checkout: self
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)\$(solution)'
+        Contents: '**'
+        TargetFolder: '$(Pipeline.Workspace)\$(solution)'
+    - task: AzurePowerShell@5
+      displayName: 'Build the artifact using PowerShell'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(solution)\scripts\Build.ps1'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(solution)'
+        pwsh: true
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)\$(solution)'
+        flattenFolders: false
+        Contents: |
+          main.bicep
+          main.json
+          publicIP.bicep
+          deploy.ps1
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
+- stage: ValidateARM
+  dependsOn: Build
+  jobs:
+  - job: ValidateDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: '$(Production)'
+        subscriptionId: '$(Subscriptionid)'
+        resourceGroupName: '$(resourceGroupName)'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Pipeline.Workspace)\$(artifactName)\main.json'
+        deploymentMode: 'Validation'
+    - task: AzurePowerShell@5
+      displayName: 'ARM-TTK validation'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'inlineScript'
+        Inline: |
+          Write-Verbose "Downloading the latest version of ARM-TTK from github, please wait.." -Verbose
+          Git clone https://github.com/Azure/arm-ttk.git "$env:TMP\git"
+          Import-Module "$env:TMP\git\arm-ttk\arm-ttk.psm1" -ErrorAction Stop
+          Test-AzTemplate -TemplatePath "$(Pipeline.Workspace)\$(artifactName)\main.json" -skip @('IDs-Should-Be-Derived-From-ResourceIDs','Location-Should-Not-Be-Hardcoded','apiVersions-Should-Be-Recent-In-Reference-Functions', 'Template-Should-Not-Contain-Blanks')
+        azurePowerShellVersion: 'LatestVersion'
+        scriptPath: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: WhatifDeploy
+  dependsOn: ValidateARM
+  jobs:
+  - job: WhatIfDeployment
+    steps:
+    - checkout: none
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: '$(Pipeline.Workspace)'
+        downloadType: 'single'
+        artifactName: '$(artifactName)'
+    - task: AzurePowerShell@5
+      displayName: 'Bluestep Azure Firewall Whatif'
+      inputs:
+        azureSubscription: '$(Production)'
+        ScriptType: 'FilePath'
+        ScriptPath: '$(Pipeline.Workspace)\$(artifactName)\deploy.ps1'
+        ScriptArguments: -Whatif -ResourceGroupName '$(resourceGroupName)'
+        azurePowerShellVersion: 'LatestVersion'
+        workingDirectory: '$(Pipeline.Workspace)\$(artifactName)'
+        pwsh: true
+- stage: Deploy_Azure_Firewall
+  dependsOn: WhatifDeploy
+  jobs:
+  - deployment: DeployFirewall
+    displayName: Deploy Azure Firewall for production
+    environment: '$(environmentProd)'
+    strategy:
+     runOnce:
+      deploy:
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: '$(Production)'
+            subscriptionId: '$(Subscriptionid)'
+            resourceGroupName: '$(resourceGroupName)'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)\$(artifactName)\main.json'
+            deploymentMode: 'Incremental'
